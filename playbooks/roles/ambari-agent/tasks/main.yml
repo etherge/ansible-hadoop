@@ -1,0 +1,29 @@
+---
+- name: Load OS specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_os_family|lower }}.yml"
+        - defaults.yml
+
+- name: Download the Ambari repo
+  get_url: url={{ ambari_repo_url }} dest={{ ambari_repo_file }}
+
+- name: Install Ambari agent
+  yum:
+    name: "{{ item }}"
+    update_cache: yes
+    state: installed
+  with_items:
+    - ambari-agent
+  when: ansible_os_family == "RedHat"
+
+- name: Configure Ambari agent
+  lineinfile: dest=/etc/ambari-agent/conf/ambari-agent.ini
+              regexp='^hostname\s*='
+              line="hostname={{ hostvars[group['ambari-server']]['inventory_hostname'] }}"
+              state=present
+  notify: Restart ambari-agent
+
+- name: Make sure ambari-agent is running
+  service: name=ambari-agent state=started enabled=yes

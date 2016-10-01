@@ -1,0 +1,8 @@
+---
+- name: Apply ambari-agent role
+  hosts: kap-query
+  any_errors_fatal: true
+  remote_user: kylin
+  
+  roles:
+    - ambari-agent 

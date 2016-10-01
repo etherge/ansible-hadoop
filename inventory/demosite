@@ -1,0 +1,11 @@
+[ambari-server]
+ambari1.chinacloudapp.cn
+
+[master]
+
+[slave]
+
+[kap-all]
+
+[kap-query]
+test-ansible.chinacloudapp.cn ansible_user=kylin ansible_ssh_pass=Kylin2016
